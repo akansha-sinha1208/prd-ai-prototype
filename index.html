@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD.ai — Feature Intelligence Engine</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at top, #1e293b, #0f172a 70%);
+  color: white;
+}
+
+.hero {
+  text-align: center;
+  padding: 100px 20px 60px;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, #22c55e, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  color: #cbd5e1;
+  max-width: 650px;
+  margin: auto;
+  font-size: 1.1rem;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 35px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.3);
+}
+
+h2, h3 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #0f172a;
+  color: white;
+  font-size: 0.95rem;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border: 1px solid #22c55e;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.checkbox-grid label {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+
+button {
+  padding: 14px 28px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(34,197,94,0.3);
+}
+
+.loading {
+  color: #facc15;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+.success {
+  background: rgba(34,197,94,0.15);
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(34,197,94,0.3);
+}
+
+pre {
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+</style>
+
+<!-- Google Analytics (REPLACE BOTH WITH YOUR REAL ID) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z4L8W1TH6F"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Z4L8W1TH6F');
+</script>
+
+</head>
+
+<body>
+
+<section class="hero">
+  <h1>PRD.ai</h1>
+  <p>
+    Generate structured, feature-level Product Requirement Documents
+    in seconds using modular AI simulation.
+  </p>
+</section>
+
+<div class="container">
+
+<div class="card">
+<h2>Create Feature PRD</h2>
+
+<label>Feature Name</label>
+<input id="featureName" placeholder="Smart Onboarding Flow" />
+
+<label>Feature Description</label>
+<textarea id="featureDesc" rows="4" placeholder="Describe what this feature does..."></textarea>
+
+<label>Target Users</label>
+<input id="targetUsers" placeholder="New Users, Product Managers" />
+
+<label>Business Goal</label>
+<input id="businessGoal" placeholder="Increase activation rate by 20%" />
+
+<h3>Select PRD Sections</h3>
+<div class="checkbox-grid">
+<label><input type="checkbox" value="Executive Summary" checked> Executive Summary</label>
+<label><input type="checkbox" value="Problem Statement" checked> Problem Statement</label>
+<label><input type="checkbox" value="User Stories" checked> User Stories</label>
+<label><input type="checkbox" value="Functional Requirements" checked> Functional Requirements</label>
+<label><input type="checkbox" value="Acceptance Criteria"> Acceptance Criteria</label>
+<label><input type="checkbox" value="Edge Cases"> Edge Cases</label>
+<label><input type="checkbox" value="Success Metrics" checked> Success Metrics</label>
+<label><input type="checkbox" value="Dependencies"> Dependencies</label>
+<label><input type="checkbox" value="Risks"> Risks & Mitigation</label>
+</div>
+
+<button onclick="generatePRD()">Generate PRD</button>
+<div id="loading" class="loading"></div>
+</div>
+
+<div id="outputSection" class="card" style="display:none;">
+<div class="success">
+✅ PRD Generated — <span id="timestamp"></span>
+</div>
+
+<pre id="prdOutput"></pre>
+
+<button onclick="copyMarkdown()">Copy Markdown</button>
+<button onclick="downloadMarkdown()">Download .md</button>
+</div>
+
+<div class="card">
+<h3>Why I Built This</h3>
+<p>
+Product Managers often spend 5–10 hours weekly drafting feature-level PRDs. 
+This prototype demonstrates how structured, modular AI-driven generation can 
+help reduce PRD drafting time from hours to minutes — while preserving clarity, rigor, and alignment across teams.
+</p>
+</div>
+
+</div>
+
+<footer>
+Built & Designed by Akansha Sinha — AI Product Portfolio Experiment
+</footer>
+
+<script>
+
+async function generatePRD() {
+
+const name = document.getElementById("featureName").value.trim();
+const desc = document.getElementById("featureDesc").value.trim();
+const users = document.getElementById("targetUsers").value.trim();
+const goal = document.getElementById("businessGoal").value.trim();
+
+const selectedSections = Array.from(
+  document.querySelectorAll('input[type="checkbox"]:checked')
+).map(cb => cb.value);
+
+if (!name || !desc) {
+  alert("Please enter a Feature Name and Description.");
+  return;
+}
+
+if (selectedSections.length === 0) {
+  alert("Please select at least one PRD section.");
+  return;
+}
+
+const loading = document.getElementById("loading");
+const outputSection = document.getElementById("outputSection");
+const prdOutput = document.getElementById("prdOutput");
+
+let markdown = `# ${name} — Feature PRD\n\n`;
+
+for (let section of selectedSections) {
+  loading.innerText = `Generating ${section}...`;
+  await new Promise(r => setTimeout(r, 500));
+  markdown += generateSection(section, name, desc, users, goal);
+}
+
+loading.innerText = "";
+document.getElementById("timestamp").innerText = new Date().toLocaleString();
+prdOutput.innerText = markdown;
+outputSection.style.display = "block";
+
+if (typeof gtag === "function") {
+  gtag('event', 'generate_prd');
+}
+}
+
+function generateSection(section, name, desc, users, goal) {
+
+const audience = users || "target users";
+const objective = goal || "drive measurable business impact";
+
+switch(section) {
+
+case "Executive Summary":
+return `## Executive Summary
+${name} is designed to ${desc}. This feature serves ${audience} and aims to ${objective}.
+
+`;
+
+case "Problem Statement":
+return `## Problem Statement
+Currently, ${audience} experience workflow inefficiencies and friction.
+${name} addresses these challenges through a structured, scalable solution.
+
+`;
+
+case "User Stories":
+return `## User Stories
+- As a ${audience}, I want ${name} to function seamlessly so I can achieve outcomes efficiently.
+- As a stakeholder, I want measurable progress toward ${objective}.
+
+`;
+
+case "Functional Requirements":
+return `## Functional Requirements
+- Enable ${name} functionality aligned with: ${desc}.
+- Ensure responsive UI and accessibility.
+- Track usage analytics.
+
+`;
+
+case "Acceptance Criteria":
+return `## Acceptance Criteria
+- All defined user flows complete successfully.
+- No critical defects present.
+
+`;
+
+case "Edge Cases":
+return `## Edge Cases
+- User exits midway.
+- Network interruption occurs.
+
+`;
+
+case "Success Metrics":
+return `## Success Metrics
+- Increase in adoption among ${audience}.
+- Measurable progress toward ${objective}.
+
+`;
+
+case "Dependencies":
+return `## Dependencies
+- Backend APIs
+- Design system components
+
+`;
+
+case "Risks":
+return `## Risks & Mitigation
+- Adoption risk mitigated through onboarding guidance.
+
+`;
+
+default:
+return "";
+}
+}
+
+function copyMarkdown() {
+navigator.clipboard.writeText(document.getElementById("prdOutput").innerText);
+alert("Copied to clipboard!");
+}
+
+function downloadMarkdown() {
+const text = document.getElementById("prdOutput").innerText;
+const name = document.getElementById("featureName").value.trim() || "feature-prd";
+const fileName = name.toLowerCase().replace(/\s+/g, "-") + ".md";
+const blob = new Blob([text], { type: "text/markdown" });
+const link = document.createElement("a");
+link.href = URL.createObjectURL(blob);
+link.download = fileName;
+link.click();
+}
+
+</script>
+
+</body>
+</html>
